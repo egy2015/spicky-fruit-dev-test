@@ -2,15 +2,20 @@ package http
 
 import (
 	"context"
+	"errors"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
+	"github.com/durianpay/fullstack-boilerplate/internal/config"
 	"github.com/durianpay/fullstack-boilerplate/internal/openapigen"
+	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/go-chi/chi/v5"
+	"github.com/golang-jwt/jwt/v5"
 	oapinethttpmw "github.com/oapi-codegen/nethttp-middleware"
 )
 
@@ -38,6 +43,9 @@ func NewServer(apiHandler openapigen.ServerInterface, openapiYamlPath string) *S
 			&oapinethttpmw.Options{
 				DoNotValidateServers:  true,
 				SilenceServersWarning: true,
+				Options: openapi3filter.Options{
+					AuthenticationFunc: BearerAuthFunc,
+				},
 			},
 		))
 		openapigen.HandlerFromMux(apiHandler, api)
@@ -84,4 +92,32 @@ func (s *Server) Start(addr string) {
 
 func (s *Server) Routes() http.Handler {
 	return s.router
+}
+
+func BearerAuthFunc(ctx context.Context, input *openapi3filter.AuthenticationInput) error {
+	if input == nil || input.SecuritySchemeName != "BearerAuth" {
+		return nil
+	}
+
+	authHeader := input.RequestValidationInput.Request.Header.Get("Authorization")
+	if authHeader == "" {
+		return errors.New("missing Authorization header")
+	}
+
+	parts := strings.SplitN(authHeader, " ", 2)
+	if len(parts) != 2 || parts[0] != "Bearer" {
+		return errors.New("invalid Authorization header format")
+	}
+
+	token := parts[1]
+
+	parsed, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
+		return []byte(config.JwtSecret), nil
+	})
+
+	if err != nil || !parsed.Valid {
+		return errors.New("invalid token")
+	}
+
+	return nil
 }

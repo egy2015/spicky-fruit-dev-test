@@ -10,6 +10,8 @@ import (
 	ah "github.com/durianpay/fullstack-boilerplate/internal/module/auth/handler"
 	ar "github.com/durianpay/fullstack-boilerplate/internal/module/auth/repository"
 	au "github.com/durianpay/fullstack-boilerplate/internal/module/auth/usecase"
+	paymentHandler "github.com/durianpay/fullstack-boilerplate/internal/module/payment/handler"
+	paymentusecase "github.com/durianpay/fullstack-boilerplate/internal/module/payment/usecase"
 	srv "github.com/durianpay/fullstack-boilerplate/internal/service/http"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -41,8 +43,12 @@ func main() {
 
 	authH := ah.NewAuthHandler(authUC)
 
+	paymentUC := paymentusecase.NewPaymentUsecase(db)
+	paymentH := paymentHandler.NewPaymentHandler(paymentUC)
+
 	apiHandler := &api.APIHandler{
-		Auth: authH,
+		Auth:    authH,
+		Payment: paymentH,
 	}
 
 	server := srv.NewServer(apiHandler, config.OpenapiYamlLocation)
@@ -60,6 +66,14 @@ func initDB(db *sql.DB) error {
 		  email TEXT NOT NULL UNIQUE,
 		  password_hash TEXT NOT NULL,
 		  role TEXT NOT NULL
+		);`,
+
+		`CREATE TABLE IF NOT EXISTS payments (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			merchant_name TEXT NOT NULL,
+			amount INTEGER NOT NULL,
+			status TEXT NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 		);`,
 	}
 	for _, s := range stmts {
@@ -84,6 +98,14 @@ func initDB(db *sql.DB) error {
 		if _, err := db.Exec("INSERT INTO users(email, password_hash, role) VALUES (?, ?, ?)", "operation@test.com", string(hash), "operation"); err != nil {
 			return err
 		}
+	}
+
+	row = db.QueryRow("SELECT COUNT(1) FROM payments")
+	_ = row.Scan(&cnt)
+
+	if cnt == 0 {
+		db.Exec(`INSERT INTO payments (merchant_name, amount, status) VALUES ('Tokopedia', 10000, 'processing')`)
+		db.Exec(`INSERT INTO payments (merchant_name, amount, status) VALUES ('Shopee', 25000, 'completed')`)
 	}
 
 	const dbLifetime = time.Minute * 5
