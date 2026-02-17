@@ -1,7 +1,7 @@
 <template>
   <DashboardLayout>
     <div class="dashboard-content">
-      <h1>Payments Dashboard</h1>
+      <h1>Dashboard Analytics</h1>
 
       <!-- Summary Widget -->
       <div class="summary-widget">
@@ -143,7 +143,7 @@ onMounted(() => {
   padding: 1.5rem;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #0066cc;
+  border-left: 4px solidvar(--primary-color);
 }
 
 .summary-card h3 {
@@ -192,14 +192,14 @@ onMounted(() => {
 }
 
 .filter-btn:hover {
-  border-color: #0066cc;
-  color: #0066cc;
+  border-color:var(--primary-color);
+  color:var(--primary-color);
 }
 
 .filter-btn.active {
-  background-color: #0066cc;
+  background-color:var(--primary-color);
   color: white;
-  border-color: #0066cc;
+  border-color:var(--primary-color);
 }
 
 .table-container {

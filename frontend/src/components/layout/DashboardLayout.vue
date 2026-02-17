@@ -2,13 +2,32 @@
   <div class="dashboard-layout">
     <header class="navbar">
       <div class="navbar-content">
-        <h2>Payments Dashboard</h2>
+        <h2><img src="../../../public/favicon.ico" width="20px" /> Spicky Fruit Monitoring</h2>
         <button @click="handleLogout" class="logout-btn">Logout</button>
       </div>
     </header>
-    <main class="main-content">
-      <slot />
-    </main>
+
+    <div class="dashboard-body">
+      <aside class="sidebar">
+        <nav class="menu">
+          <router-link to="/dashboard" class="menu-item" active-class="active">
+            Dashboard Analytics
+          </router-link>
+
+          <router-link to="/profile" class="menu-item" active-class="active">
+            Profile
+          </router-link>
+          <div class="mobile-nav">
+            <hr style="margin: 1rem 0;" />
+            <button @click="handleLogout" class="logout-btn">Logout</button>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="main-content">
+        <slot />
+      </main>
+    </div>
   </div>
 </template>
 
@@ -56,7 +75,7 @@ const handleLogout = () => {
 
 .logout-btn {
   padding: 0.5rem 1rem;
-  background-color: #0066cc;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -66,7 +85,7 @@ const handleLogout = () => {
 }
 
 .logout-btn:hover {
-  background-color: #0052a3;
+  background-color: var(--secondary-color);
 }
 
 .main-content {
@@ -77,7 +96,51 @@ const handleLogout = () => {
   padding: 0 2rem;
 }
 
+.dashboard-body {
+  display: flex;
+  flex: 1;
+}
+
+.sidebar {
+  width: 220px;
+  background-color: #fff;
+  border-right: 1px solid #ddd;
+  padding: 1.5rem 1rem;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.menu-item {
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  color: #333;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.menu-item.active {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.menu-item:hover {
+  background-color: var(--secondary-color);
+  color: #fff;
+}
+
+.mobile-nav {
+  display: none;
+}
+
 @media (max-width: 768px) {
+  .navbar {
+    display: none;
+  }
+
   .navbar-content {
     flex-direction: column;
     gap: 1rem;
@@ -86,6 +149,11 @@ const handleLogout = () => {
   .navbar-content h2 {
     width: 100%;
     text-align: center;
+  }
+
+  .mobile-nav {
+    margin-top: 2rem;
+    display: block;
   }
 
   .logout-btn {

@@ -1,19 +1,22 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/dashboard/v1'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/dashboard/v1'
 
 export const http = {
   async request(path, options = {}) {
-    const response = await fetch(`${API_BASE_URL}${path}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options.headers || {}),
-      },
+    const token = localStorage.getItem('token')
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(options.headers || {}),
+    }
+
+    const response = await fetch(path, {
       ...options,
+      headers,
     })
 
     if (!response.ok) {
-      const errorText = await response.text()
-      throw new Error(errorText || `HTTP Error ${response.status}`)
+      const text = await response.text()
+      throw new Error(text || `HTTP error ${response.status}`)
     }
 
     return response.json()

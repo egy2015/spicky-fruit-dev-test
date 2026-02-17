@@ -35,7 +35,7 @@ import { RouterLink } from 'vue-router'
 
 .home-link {
   padding: 0.75rem 1.5rem;
-  background-color: #0066cc;
+  background-color:var(--primary-color);
   color: white;
   text-decoration: none;
   border-radius: 4px;
@@ -43,6 +43,6 @@ import { RouterLink } from 'vue-router'
 }
 
 .home-link:hover {
-  background-color: #0052a3;
+  background-color: var(--secondary-color);
 }
 </style>

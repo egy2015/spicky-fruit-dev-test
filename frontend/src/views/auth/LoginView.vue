@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-card">
       <h1>Login</h1>
-      
+
       <form @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="email">Email</label>
@@ -28,20 +28,21 @@
           />
         </div>
 
+        <div v-if="error" class="error-message">
+          {{ error.message || error }}
+        </div>
+
         <button type="submit" :disabled="isLoading" class="submit-btn">
           {{ isLoading ? 'Logging in...' : 'Login' }}
         </button>
       </form>
 
-      <div v-if="error" class="error-message">
-        {{ error }}
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.js'
 
@@ -54,9 +55,16 @@ const error = ref('')
 
 const isLoading = ref(false)
 
+watch([email, password], () => {
+  if (error.value) {
+    error.value = ''
+  }
+})
+
+
 const handleLogin = async () => {
   error.value = ''
-  
+
   if (!email.value || !password.value) {
     error.value = 'Email and password are required'
     return
@@ -69,7 +77,11 @@ const handleLogin = async () => {
   if (success) {
     router.push('/dashboard')
   } else {
-    error.value = authStore.error || 'Login failed. Please try again.'
+    try {
+      error.value = JSON.parse(authStore.error).message || 'Login failed. Please try again.'
+    } catch (e) {
+      error.value = 'Login failed. Please try again.'
+    }
   }
 }
 </script>
@@ -122,7 +134,7 @@ const handleLogin = async () => {
 
 .form-group input:focus {
   outline: none;
-  border-color: #0066cc;
+  border-color:var(--primary-color);
   box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
 }
 
@@ -134,7 +146,7 @@ const handleLogin = async () => {
 .submit-btn {
   width: 100%;
   padding: 0.75rem;
-  background-color: #0066cc;
+  background-color:var(--primary-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -145,7 +157,7 @@ const handleLogin = async () => {
 }
 
 .submit-btn:hover:not(:disabled) {
-  background-color: #0052a3;
+  background-color: var(--secondary-color);
 }
 
 .submit-btn:disabled {
@@ -156,6 +168,7 @@ const handleLogin = async () => {
 .error-message {
   margin-top: 1rem;
   padding: 0.75rem;
+  margin-bottom: 1rem;
   background-color: #fee;
   color: #c33;
   border-radius: 4px;
