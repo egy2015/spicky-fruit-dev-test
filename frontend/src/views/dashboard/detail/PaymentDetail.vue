@@ -3,6 +3,8 @@
     <div class="payment-detail-view">
       <h1>Payment Detail</h1>
       <p>Detailed information about a specific payment.</p>
+      <p v-if="isEditMode" class="edit-mode-note">You are in edit mode. You can changes the amount and merchant name.
+      </p>
 
       <form class="payment-detail-form" v-if="payment">
         <div class="form-group">
@@ -12,12 +14,12 @@
 
         <div class="form-group">
           <label for="merchant-name">Merchant Name</label>
-          <input id="merchant-name" type="text" :value="payment.merchant_name" disabled />
+          <input id="merchant-name" type="text" v-model="form.merchant_name" :disabled="!isEditMode" />
         </div>
 
         <div class="form-group">
           <label for="amount">Amount</label>
-          <input id="amount" type="text" :value="payment.amount" disabled />
+          <input id="amount" type="number" v-model.number="form.amount" :disabled="!isEditMode" />
         </div>
 
         <div class="form-group">
@@ -28,6 +30,16 @@
         <div class="form-group">
           <label for="date">Date</label>
           <input id="date" type="text" :value="formatDate(payment.created_at)" disabled />
+        </div>
+
+        <div class="form-group full">
+          <button v-if="!isEditMode" @click="isEditMode = true" class="submit-btn">
+            Edit
+          </button>
+
+          <button v-else @click="handleSave" :disabled="isSaving" class="submit-btn">
+            {{ isSaving ? 'Saving...' : 'Save' }}
+          </button>
         </div>
       </form>
 
@@ -54,7 +66,6 @@ onMounted(async () => {
   isLoading.value = true
 
   try {
-    // pastikan list payment sudah ada
     if (!paymentStore.payments.length) {
       await paymentStore.getPayments()
     }
@@ -63,10 +74,49 @@ onMounted(async () => {
     const found = paymentStore.payments.find(p => p.id === id)
 
     payment.value = found || null
+    if (found) {
+      payment.value = found
+      initForm(found)
+    }
   } finally {
     isLoading.value = false
   }
 })
+
+
+const isEditMode = ref(false)
+const isSaving = ref(false)
+
+const form = ref({
+  merchant_name: '',
+  amount: 0,
+})
+
+const initForm = (payment) => {
+  form.value.merchant_name = payment.merchant_name
+  form.value.amount = payment.amount
+}
+
+const handleSave = async () => {
+  isSaving.value = true
+  try {
+    await paymentStore.updatePayment(
+      Number(route.params.id),
+      form.value
+    )
+
+    payment.value = {
+      ...payment.value,
+      ...form.value,
+    }
+
+    isEditMode.value = false
+  } catch (e) {
+    alert('Failed to update payment')
+  } finally {
+    isSaving.value = false
+  }
+}
 </script>
 
 
@@ -125,6 +175,14 @@ onMounted(async () => {
 /* Full width rows if needed */
 .form-group.full {
   grid-column: span 2;
+}
+
+.edit-mode-note {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
 }
 
 /* Mobile */

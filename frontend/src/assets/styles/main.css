@@ -82,6 +82,29 @@ a:hover {
   border-bottom: 1px solid #eee;
 }
 
+
+.submit-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color:var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: var(--secondary-color);
+}
+
+.submit-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   body {
     font-size: 14px;

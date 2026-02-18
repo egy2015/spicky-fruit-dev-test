@@ -143,28 +143,6 @@ const handleLogin = async () => {
   cursor: not-allowed;
 }
 
-.submit-btn {
-  width: 100%;
-  padding: 0.75rem;
-  background-color:var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.submit-btn:hover:not(:disabled) {
-  background-color: var(--secondary-color);
-}
-
-.submit-btn:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
 .error-message {
   margin-top: 1rem;
   padding: 0.75rem;
