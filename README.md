@@ -12,13 +12,18 @@ The application provides authentication, protected dashboard routes, and payment
 This project is tested and expected to run in the following environment:
 
 ```bash
-Go 1.21 or newer
-Node.js 20 or newer
+Go 1.25.5
+Node.js 20.19.0
 Docker installed
 Docker Compose installed
 Make installed
 macOS (tested on MacBook Pro)
 ```
+
+
+To avoid version conflicts, it is strongly recommended to use version managers:
+- **Go**: [GVM (Go Version Manager)](https://github.com/moovweb/gvm)
+- **Node.js**: [NVM (Node Version Manager)](https://github.com/nvm-sh/nvm)
 
 ---
 
@@ -28,6 +33,7 @@ macOS (tested on MacBook Pro)
 .
 ├── backend/
 ├── frontend/
+├── docker-compose.yaml
 ├── openapi.yaml
 ├── Makefile
 └── README.md
@@ -53,41 +59,59 @@ go mod tidy
 go run main.go
 ```
 
-### Run Backend Server (Production Build)
+---
 
-```bash
-cd backend
-make build
-make start
-```
+## Makefile Commands
+
+### Frontend
+- `make run_setup_fe` : Set up frontend dependencies
+- `make run_fe`       : Start frontend development server ([http://localhost:5173](http://localhost:5173))
+
+### Backend
+- `make run_setup_be` : Set up environment, vendor, OpenAPI & JWT secret
+- `make run_be`       : Start backend server ([http://localhost:8080](http://localhost:8080))
+
+### Docker
+- `make docker-build`   : Build images (clean build)
+- `make docker-restart` : Restart all containers
+- `make docker-status`  : Check Docker container health/status
 
 ---
 
-## Frontend
+## API Overview
 
-The frontend application is built using Vue 3, Vite, Pinia, and Vue Router.
+**Base Path**: `/dashboard/v1`
 
-### Install Frontend Dependencies
-
-```bash
-make run_setup_fe
-```
-
-### Run Frontend (Local)
-
-```bash
-make run_fe
-```
-
-The frontend will be available on the default Vite development port.
-
-### Build Frontend (Production)
-
-```bash
-make build_fe
-```
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/auth/login` | Login and get JWT token |
+| `GET` | `/payments` | Get list of payments (Auth Required) |
+| `PUT` | `/payments/:id` | Update payment (Merchant & Amount) |
 
 ---
+
+## Frontend Authentication
+
+**Login Page**: [http://localhost:5173/login](http://localhost:5173/login)
+
+**Default Test Users:**
+- `cs@test.com` / `password`
+- `operation@test.com` / `password`
+
+---
+
+## Notes
+- **CORS**: Enabled for `http://localhost:5173` for local development.
+- **Scope**: Features follow take-home test requirements strictly to avoid overengineering.
+
+## Evidence
+Please include the following in your submission:
+1. Screenshots or screen recordings of the application.
+2. Status of Docker running services (`make docker-status`).
+3. Evidence of successful login and payment update flow.
+
+---
+*See also:* [backend/README.md](./backend/README.md) | [frontend/README.md](./frontend/README.md)
 
 ## API Documentation
 

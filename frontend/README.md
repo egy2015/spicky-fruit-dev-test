@@ -8,7 +8,6 @@ A Vue 3 + Vite frontend for an internal payments monitoring dashboard.
 - **Vite 5** - Next-generation build tool
 - **Pinia** - State management for Vue
 - **Vue Router 4** - Client-side routing
-- **Axios** - HTTP client (optional, using fetch in API service)
 
 ## Project Structure
 
@@ -20,13 +19,20 @@ src/
 │   └── index.js           # Router configuration and guards
 ├── stores/
 │   └── auth.js            # Pinia auth store
+│   └── payment.js
+│   └── user.js 
 ├── services/
 │   └── api.js             # API service layer
+│   └── http.js
 ├── views/
 │   ├── auth/
 │   │   └── LoginView.vue  # Login page
 │   ├── dashboard/
 │   │   └── DashboardView.vue # Protected dashboard
+│   │   └── detail/
+│   │       └── PaymentDetail.vue 
+│   ├── user/
+│   │   └── UserListView.vue
 │   └── NotFoundView.vue   # 404 page
 ├── components/
 │   ├── layout/
