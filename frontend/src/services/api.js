@@ -12,4 +12,8 @@ export const apiService = {
       body: JSON.stringify(payload),
     })
   },
+
+  getUsers() {
+    return http.request('/dashboard/v1/users')
+  }
 }

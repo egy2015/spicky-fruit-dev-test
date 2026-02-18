@@ -3,29 +3,45 @@
     <header class="navbar">
       <div class="navbar-content">
         <h2><img src="../../../public/favicon.ico" width="20px" /> Spicky Fruit Monitoring</h2>
-        <button @click="handleLogout" class="logout-btn">Logout</button>
+        <div @mouseenter="mouseOver = true" @mouseleave="mouseOver = false" class="user-info">
+          <div class="avatar">
+            {{ authStore.role.charAt(0, 1).toUpperCase() }}
+          </div>
+          <span v-show="mouseOver" class="user-label">
+            {{ authStore.role }}
+          </span>
+          <button @click="handleLogout" class="logout-btn">Logout</button>
+        </div>
       </div>
     </header>
 
     <div class="dashboard-body">
-      <aside class="sidebar">
-        <nav class="menu">
-          <router-link to="/dashboard" class="menu-item" active-class="active">
-            Dashboard Analytics
-          </router-link>
+      <template v-if="!isCollapsed">
+        <aside class="sidebar">
+          <nav class="menu">
+            <router-link to="/dashboard" class="menu-item" :class="{ 'active': router.currentRoute.value.path.includes('/dashboard') }">
+              Dashboard Analytics
+            </router-link>
 
-          <router-link to="/profile" class="menu-item" active-class="active">
-            Profile
-          </router-link>
-          <div class="mobile-nav">
-            <hr style="margin: 1rem 0;" />
-            <button @click="handleLogout" class="logout-btn">Logout</button>
-          </div>
-        </nav>
-      </aside>
+            <router-link to="/users" class="menu-item" :class="{ 'active': router.currentRoute.value.path.includes('/users') }">
+              User List
+            </router-link>
+            <div class="mobile-nav">
+              <hr style="margin: 1rem 0;" />
+              <button @click="handleLogout" class="logout-btn">Logout {{ authStore.role }}</button>
+            </div>
+          </nav>
+
+        </aside>
+      </template>
+      <button @click="isCollapsed = !isCollapsed" class="collaptor">
+        <span class="collaptor-text">{{ !isCollapsed ? 'Hide v' : 'Show ^' }}</span>
+      </button>
 
       <main class="main-content">
-        <slot />
+        <div class="dashboard-content">
+          <slot />
+        </div>
       </main>
     </div>
   </div>
@@ -34,7 +50,10 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/auth.js'
+import { ref } from 'vue'
 
+const mouseOver = ref(false)
+const isCollapsed = ref(false);
 const router = useRouter()
 const authStore = useAuthStore()
 
@@ -45,6 +64,21 @@ const handleLogout = () => {
 </script>
 
 <style scoped>
+.collaptor {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 2rem;
+  background-color: white;
+  border: none;
+}
+
+.collaptor-text {
+  display: inline-block;
+  transform: rotate(90deg);
+  transform-origin: center;
+}
+
 .dashboard-layout {
   display: flex;
   flex-direction: column;
@@ -134,6 +168,43 @@ const handleLogout = () => {
 
 .mobile-nav {
   display: none;
+}
+
+
+.dashboard-content {
+  padding: 2rem;
+}
+
+.dashboard-content h1 {
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: #333;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.user-label {
+  font-size: 0.9rem;
+  color: #eee;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {

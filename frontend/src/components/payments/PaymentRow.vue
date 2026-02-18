@@ -1,5 +1,6 @@
 <template>
-  <tr class="payment-row">
+  <tr>
+    <td><a @click="showDetail(payment.id)">View</a></td>
     <td>{{ payment.id }}</td>
     <td>{{ payment.merchant_name || payment.merchantName }}</td>
     <td>{{ formatDate(payment.date || payment.created_at) }}</td>
@@ -11,7 +12,9 @@
 </template>
 
 <script setup>
+import router from '../../router'
 import StatusBadge from './StatusBadge.vue'
+import { formatDate } from '../../utils/format'
 
 defineProps({
   payment: {
@@ -20,14 +23,8 @@ defineProps({
   },
 })
 
-const formatDate = (dateString) => {
-  if (!dateString) return 'N/A'
-  const date = new Date(dateString)
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
+const showDetail = (paymentId) => {
+  router.push('dashboard/payment/' + paymentId)
 }
 
 const formatAmount = (amount) => {
@@ -39,9 +36,3 @@ const formatAmount = (amount) => {
 }
 </script>
 
-<style scoped>
-.payment-row td {
-  padding: 1rem;
-  color: #333;
-}
-</style>

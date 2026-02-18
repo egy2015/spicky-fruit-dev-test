@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 import LoginView from '../views/auth/LoginView.vue'
 import DashboardView from '../views/dashboard/DashboardView.vue'
+import UserView from '../views/user/UserListView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
 
 const routes = [
@@ -19,6 +20,17 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/dashboard/payment/:id',
+    name: 'PaymentDetail',
+    component: () => import('../views/dashboard/detail/PaymentDetail.vue'),
+  },
+  {
+    path: '/users',
+    name: 'UserList',
+    component: UserView,
     meta: { requiresAuth: true },
   },
   {

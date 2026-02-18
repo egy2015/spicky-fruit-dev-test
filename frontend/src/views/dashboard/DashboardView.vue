@@ -1,57 +1,49 @@
 <template>
   <DashboardLayout>
-    <div class="dashboard-content">
-      <h1>Dashboard Analytics</h1>
-
-      <!-- Summary Widget -->
-      <div class="summary-widget">
-        <div class="summary-card">
-          <h3>Total Payments</h3>
-          <p class="summary-value">{{ totalPayments }}</p>
-        </div>
-        <div class="summary-card success">
-          <h3>Completed</h3>
-          <p class="summary-value">{{ completedCount }}</p>
-        </div>
-        <div class="summary-card processing">
-          <h3>Processing</h3>
-          <p class="summary-value">{{ processingCount }}</p>
-        </div>
-        <div class="summary-card failed">
-          <h3>Failed</h3>
-          <p class="summary-value">{{ failedCount }}</p>
-        </div>
+    <h1>Dashboard Analytics</h1>
+    <!-- Summary Widget -->
+    <div class="summary-widget">
+      <div class="summary-card">
+        <h3>Total Payments</h3>
+        <p class="summary-value">{{ totalPayments }}</p>
       </div>
-
-      <!-- Filters -->
-      <div class="filters">
-        <button
-          v-for="status in ['all', 'completed', 'processing', 'failed']"
-          :key="status"
-          @click="filterByStatus(status)"
-          :class="{ active: activeFilter === status }"
-          class="filter-btn"
-        >
-          {{ status.charAt(0).toUpperCase() + status.slice(1) }}
-        </button>
+      <div class="summary-card success">
+        <h3>Completed</h3>
+        <p class="summary-value">{{ completedCount }}</p>
       </div>
-
-      <!-- Payments Table -->
-      <div v-if="isLoading" class="loading">
-        <Loading />
+      <div class="summary-card processing">
+        <h3>Processing</h3>
+        <p class="summary-value">{{ processingCount }}</p>
       </div>
-
-      <div v-else-if="filteredPayments.length > 0" class="table-container">
-        <PaymentsTable :payments="filteredPayments" />
+      <div class="summary-card failed">
+        <h3>Failed</h3>
+        <p class="summary-value">{{ failedCount }}</p>
       </div>
+    </div>
 
-      <div v-else class="no-data">
-        <p>No payments found</p>
-      </div>
+    <!-- Filters -->
+    <div class="filters">
+      <button v-for="status in ['all', 'completed', 'processing', 'failed']" :key="status"
+        @click="filterByStatus(status)" :class="{ active: activeFilter === status }" class="filter-btn">
+        {{ status.charAt(0).toUpperCase() + status.slice(1) }}
+      </button>
+    </div>
 
-      <div v-if="error" class="error-message">
-        {{ error }}
-      </div>
+    <!-- Payments Table -->
+    <div v-if="isLoading" class="loading">
+      <Loading />
+    </div>
+
+    <div v-else-if="filteredPayments.length > 0" class="table-container">
+      <PaymentsTable :payments="filteredPayments" />
+    </div>
+
+    <div v-else class="no-data">
+      <p>No payments found</p>
+    </div>
+
+    <div v-if="error" class="error-message">
+      {{ error }}
     </div>
   </DashboardLayout>
 </template>
@@ -121,16 +113,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.dashboard-content {
-  padding: 2rem;
-}
-
-.dashboard-content h1 {
-  margin-bottom: 2rem;
-  font-size: 2rem;
-  color: #333;
-}
-
 .summary-widget {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -192,21 +174,14 @@ onMounted(() => {
 }
 
 .filter-btn:hover {
-  border-color:var(--primary-color);
-  color:var(--primary-color);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .filter-btn.active {
-  background-color:var(--primary-color);
+  background-color: var(--primary-color);
   color: white;
-  border-color:var(--primary-color);
-}
-
-.table-container {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  border-color: var(--primary-color);
 }
 
 .loading,
