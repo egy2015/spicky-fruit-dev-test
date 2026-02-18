@@ -31,3 +31,11 @@ func (h *APIHandler) GetDashboardV1Users(
 ) {
 	h.User.GetDashboardV1Users(w, r)
 }
+
+func (h *APIHandler) PutDashboardV1PaymentsId(
+	w http.ResponseWriter,
+	r *http.Request,
+	id int,
+) {
+	h.Payment.PutDashboardV1PaymentsId(w, r, id)
+}

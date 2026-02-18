@@ -14,6 +14,7 @@ type Payment struct {
 
 type PaymentUsecase interface {
 	GetPayments() ([]Payment, error)
+	UpdatePayment(id int, merchantName string, amount int) error
 }
 
 type paymentUsecase struct {
@@ -52,4 +53,18 @@ func (u *paymentUsecase) GetPayments() ([]Payment, error) {
 	}
 
 	return payments, nil
+}
+
+func (u *paymentUsecase) UpdatePayment(
+	id int,
+	merchantName string,
+	amount int,
+) error {
+	_, err := u.db.Exec(`
+		UPDATE payments
+		SET merchant_name = ?, amount = ?
+		WHERE id = ?
+	`, merchantName, amount, id)
+
+	return err
 }

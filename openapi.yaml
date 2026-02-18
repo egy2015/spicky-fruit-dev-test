@@ -162,3 +162,42 @@ paths:
                       $ref: '#/components/schemas/User'
         "401":
           $ref: '#/components/responses/UnauthorizedError'
+
+  /dashboard/v1/payments/{id}:
+    put:
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - merchant_name
+                - amount
+              properties:
+                merchant_name:
+                  type: string
+                amount:
+                  type: integer
+      responses:
+        '200':
+          description: Payment updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  merchant_name:
+                    type: string
+                  amount:
+                    type: integer
