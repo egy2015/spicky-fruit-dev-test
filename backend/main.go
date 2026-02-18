@@ -12,6 +12,8 @@ import (
 	au "github.com/durianpay/fullstack-boilerplate/internal/module/auth/usecase"
 	paymentHandler "github.com/durianpay/fullstack-boilerplate/internal/module/payment/handler"
 	paymentusecase "github.com/durianpay/fullstack-boilerplate/internal/module/payment/usecase"
+	userhandler "github.com/durianpay/fullstack-boilerplate/internal/module/user/handler"
+	userusecase "github.com/durianpay/fullstack-boilerplate/internal/module/user/usecase"
 	srv "github.com/durianpay/fullstack-boilerplate/internal/service/http"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -46,9 +48,13 @@ func main() {
 	paymentUC := paymentusecase.NewPaymentUsecase(db)
 	paymentH := paymentHandler.NewPaymentHandler(paymentUC)
 
+	userUC := userusecase.NewUserUsecase(db)
+	userH := userhandler.NewUserHandler(userUC)
+
 	apiHandler := &api.APIHandler{
 		Auth:    authH,
 		Payment: paymentH,
+		User:    userH,
 	}
 
 	server := srv.NewServer(apiHandler, config.OpenapiYamlLocation)
