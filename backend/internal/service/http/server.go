@@ -15,6 +15,7 @@ import (
 	"github.com/durianpay/fullstack-boilerplate/internal/openapigen"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"github.com/golang-jwt/jwt/v5"
 	oapinethttpmw "github.com/oapi-codegen/nethttp-middleware"
 )
@@ -36,6 +37,14 @@ func NewServer(apiHandler openapigen.ServerInterface, openapiYamlPath string) *S
 	}
 
 	r := chi.NewRouter()
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:5173"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300,
+	}))
 
 	r.Route("/", func(api chi.Router) {
 		api.Use(oapinethttpmw.OapiRequestValidatorWithOptions(
