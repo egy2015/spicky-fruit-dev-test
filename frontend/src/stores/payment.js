@@ -24,7 +24,7 @@ export const usePaymentStore = defineStore('payment', {
       }
     },
      async updatePayment(id, payload) {
-      const updated = await http.request(`/dashboard/v1/payments/${id}`, {
+      const updated = await http.request(`/payments/${id}`, {
         method: 'PUT',
         body: JSON.stringify(payload),
       })

@@ -3,17 +3,19 @@ import { http } from './http'
 export const apiService = {
   getPayments(status = null) {
     const query = status ? `?status=${status}` : ''
-    return http.request(`/dashboard/v1/payments${query}`)
+    return http.request(`/payments${query}`)
   },
 
+
+
   login(payload) {
-    return http.request('/dashboard/v1/auth/login', {
+    return http.request('/auth/login', {
       method: 'POST',
       body: JSON.stringify(payload),
     })
   },
 
   getUsers() {
-    return http.request('/dashboard/v1/users')
+    return http.request('/users')
   }
 }
