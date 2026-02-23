@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [vue()],
    server: {
     proxy: {
-      '/dashboard': {
+      '/dashboard/v1': {
         target: 'http://localhost:8080',
         changeOrigin: true,
       },
